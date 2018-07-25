@@ -7,11 +7,10 @@
 
 //	namespace Uamp\inc\admin;
 
-//	use Uamp\inc\admin\options\Header;
 
-//	if ( ! is_admin() ) {
-//		return;
-//	}
+	if ( ! is_admin() ) {
+		return;
+	}
 
 	if ( ! class_exists( 'Redux' ) ) {
 		return;
@@ -123,7 +122,7 @@
 					// For a full list of options, visit: http://codex.wordpress.org/Function_Reference/add_submenu_page#Parameters
 					'page_permissions' 		=> 'manage_options',
 					// Permissions needed to access the options panel.
-					'menu_icon' 			=> 'dashicons-admin-generic',
+					'menu_icon' 			=> UAMP_PLUGIN_URL . "/images/amp.svg",
 					// Specify a custom URL to an icon
 					'last_tab' 				=> '',
 					// Force your panel to always open to a specific tab (by id)

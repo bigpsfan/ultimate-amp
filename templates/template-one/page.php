@@ -1,6 +1,8 @@
 <?php
-	echo uamp_mobile();
-	?>
+	echo "Liton Arefin";
+//	var_dump($uamp_options);
+?>
+
 <?php do_action('uamp/template/start'); ?>
 
 <?php do_action('uamp/template/header'); ?>

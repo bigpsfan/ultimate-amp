@@ -1,5 +1,5 @@
 <?php 
-global $post_id;
+global $post_id, $uamp_options;
 $uamp = new AMP_Post_Template($post_id);
 ?>
 <!doctype html>

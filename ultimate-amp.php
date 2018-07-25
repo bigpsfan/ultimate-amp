@@ -52,7 +52,7 @@ define( 'AMP_QUERY', 'amp');
 		/*
 		 * Options variable
 		 */
-		public $uamp_options;
+		static $uamp_options;
 
 		public $options;
 
@@ -94,6 +94,22 @@ define( 'AMP_QUERY', 'amp');
 
 		}
 
+
+		public static function get_options() {
+			return get_option( self::$uamp_options, array() );
+		}
+		public static function get_option( $option, $default = false ) {
+			$uamp_options = self::get_options();
+
+			if ( ! isset( $uamp_options[ $option ] ) ) {
+				return $default;
+			}
+
+			return $uamp_options[ $option ];
+		}
+
+
+
 		/*
 		 * Plugin Initialization
 		 */
@@ -126,7 +142,11 @@ define( 'AMP_QUERY', 'amp');
 				// Register all the main options
 				require_once UAMP_DIR .'/inc/admin/admin-options.php';
 			}
-			require_once UAMP_DIR . '/inc/uamp-options.php';
+
+			if ( file_exists( dirname( __FILE__ ) . '/inc/uamp-options.php' ) ) {
+				require_once( dirname( __FILE__ ) . '/inc/uamp-options.php' );
+			}
+//			require_once UAMP_DIR . '/inc/uamp-options.php';
 
 
 

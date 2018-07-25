@@ -7,16 +7,22 @@
 	 */
 
 
-//	// If this file is called directly, abort.
-//	if ( ! defined( 'ABSPATH' ) ) {
-//		die();
-//	}
+	// If this file is called directly, abort.
+	if ( ! defined( 'ABSPATH' ) ) {
+		die();
+	}
+
 
 	function uamp_mobile(){
+		require_once UAMP_DIR .'/inc/admin/admin-options.php';
+
+		global $uamp_onfig;
+		$uamp_config = new UampAdminOptions();
+
+		var_dump($uamp_config);
+
 		global $uamp_options;
 		echo $uamp_options['uamp_twitter'];
-
-		echo "Liton Arefin";
 
 		return "Arefin";
 	}
@@ -25,24 +31,34 @@
 
 class Ultimate_AMP_Options {
 
-	static $uamp_options = array ();
+	static $uamp_options;
 	static $fields = array ();
 
-	public function get( $id, $attr = '' ) {
-
-		if ( ! isset( self::$fields[ $id ] ) ) {
-			return '';
-		}
-		if ( $attr ) {
-			return isset( self::$fields[ $id ][ $attr ] ) ? self::$fields[ $id ][ $attr ] : '';
-		}
-
-		return self::$fields[ $id ]['value'];
+	public static function get_options() {
+		return get_option( self::$uamp_options, array() );
 	}
 
-	public function get_options() {
-		return self::$uamp_options;
+	/**
+	 * Get plugin option.
+	 *
+	 * @param string $option  Plugin option name.
+	 * @param bool   $default Default value.
+	 *
+	 * @return mixed Option value.
+	 */
+	public static function get_option( $option, $default = false ) {
+		$uamp_options = self::get_options();
+
+		if ( ! isset( $uamp_options[ $option ] ) ) {
+			return $default;
+		}
+
+		return $uamp_options[ $option ];
 	}
 
 
 }
+
+
+$li = new Ultimate_AMP_Options();
+	print_r($li->get_option('uamp_twitter'));
