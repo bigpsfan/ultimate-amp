@@ -14,17 +14,8 @@
 
 
 	function uamp_mobile(){
-		require_once UAMP_DIR .'/inc/admin/admin-options.php';
-
-		global $uamp_onfig;
-		$uamp_config = new UampAdminOptions();
-
-		var_dump($uamp_config);
-
 		global $uamp_options;
-		echo $uamp_options['uamp_twitter'];
-
-		return "Arefin";
+		echo $uamp_options['uamp_is_amp'];
 	}
 
 

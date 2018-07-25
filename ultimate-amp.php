@@ -13,7 +13,6 @@
 // No Direct Access Sire !!!!
 if ( ! defined( 'ABSPATH' ) ) exit;
 
-
 /*
  * Ultimate AMP Plugin Constants
  */
@@ -21,6 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 //16-7-18
 $uamp = new Ultimate_AMP();
+define( 'UAMP', $uamp->plugin_name);
 define( 'UAMP_VERSION', $uamp->version);
 define( 'UAMP_PLUGIN_URL', $uamp->plugin_url());
 define( 'UAMP_PLUGIN_DIR', $uamp->plugin_path() );
@@ -34,8 +34,17 @@ define( 'AMP_QUERY', 'amp');
 //16-7-18
 
 
+	if ( ! class_exists( 'ReduxFramework' ) ) {
+		// Redux Framework
+		require_once UAMP_DIR . '/inc/admin/redux-core/framework.php';
+		//Redux Options
+		require_once UAMP_DIR . '/inc/admin/admin-options.php';
+	}
 
-	include_once(ABSPATH . 'wp-admin/includes/plugin.php');
+	if ( file_exists( UAMP_DIR . '/inc/uamp-options.php' ) ) {
+		require_once UAMP_DIR . '/inc/uamp-options.php';
+	}
+
 
 	class Ultimate_AMP {
 		/*
@@ -43,6 +52,13 @@ define( 'AMP_QUERY', 'amp');
          */
 
 		const AMP_QUERY    = 'amp';
+
+
+		/*
+		 * Ultimate AMP name
+		 */
+		public $plugin_name = 'Ultimate AMP';
+
 
 		/*
 		 * Ultimate AMP Version Number
@@ -132,23 +148,6 @@ define( 'AMP_QUERY', 'amp');
 			add_action( 'init', [ $this, 'uamp_init' ], 99 );
 			add_action('init', array( $this, 'uamp_register_menus'));
 			add_action('uamp_init',[ $this, 'uamp_auto_add_amp_menu_link_insert'],9999);
-
-
-
-			if ( ! class_exists( 'ReduxFramework' ) && is_admin() ) {
-			    // Redux Framework
-				require_once UAMP_DIR . '/inc/admin/redux-core/framework.php';
-
-				// Register all the main options
-				require_once UAMP_DIR .'/inc/admin/admin-options.php';
-			}
-
-			if ( file_exists( dirname( __FILE__ ) . '/inc/uamp-options.php' ) ) {
-				require_once( dirname( __FILE__ ) . '/inc/uamp-options.php' );
-			}
-//			require_once UAMP_DIR . '/inc/uamp-options.php';
-
-
 
 		}
 
@@ -1084,36 +1083,11 @@ define( 'AMP_QUERY', 'amp');
 			$request_url = $this->get_requested_url();
 
 
-			//print_r( $this->uamp_home_template());
-			//		print_r($redirect_url);
-			print_r($request_url);
-
 			if ($this->uamp_is_amp_endpoint()) {
-				//			print_r('Liton Arefin, This is Homepage');
-
-				if (is_home()) {
-					print_r('Liton Arefin, This is Homepage');
-				}
 
 				return $this->template_loader();
 			}
 
-
-			//		print_r($redirect_url);
-
-			//		print_r( $this->uamp_home_template());
-
-
-			//		$is_amp_endpoint = $this->uamp_is_amp_endpoint();
-
-			//        print_r($this->uamp_generate_endpoint());
-			//		print_r( $this->uamp_home_template());
-			//		print_r( $this->uamp_is_amp_endpoint() );
-
-
-			//		if($this->uamp_is_amp_endpoint()){
-			//			return;
-			//		}
 
 			if (wp_is_mobile()) {
 				if ($redirect_url) {
@@ -1121,7 +1095,6 @@ define( 'AMP_QUERY', 'amp');
 					exit();
 				}
 			}
-
 
 			return;
 		}
@@ -1254,18 +1227,15 @@ define( 'AMP_QUERY', 'amp');
 			$this->template = new Ultimate_AMP_Template( $this->options );
 
 			new Ultimate_AMP_Shortcode( $this->template );
-
-//			print_r($this->template);
-
-			if ( $this->is_amp() ) {
+                global $uamp_options;
+				if ( $this->is_amp() && $uamp_options['uamp_is_amp'] == "enable") {
 
 				$this->template->load();
 
 				$this->template = apply_filters( 'amphtml_template_load_after', $this->template );
-//
-//				print_r( $this->template );
-//
+
 				do_action( 'amphtml_before_render', $this->template );
+
 				echo $this->template->render();
 
 
