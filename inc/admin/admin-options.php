@@ -21,8 +21,8 @@
 		//Specify if the admin menu should appear or not. Options: menu or submenu (Under appearance only)
 		'allow_sub_menu'       => true,
 		// Show the sections below the admin menu item or not
-		'menu_title'           => __( UAMP, 'redux-framework-demo' ),
-		'page_title'           => __( UAMP, 'redux-framework-demo' ),
+		'menu_title'           => __( UAMP, 'uamp' ),
+		'page_title'           => __( UAMP, 'uamp' ),
 		// You will need to generate a Google API key to use this feature.
 		// Please visit: https://developers.google.com/fonts/docs/developer_api#Auth
 		'google_api_key'       => '',
@@ -137,7 +137,7 @@
 	);
 
 	// Add content after the form.
-	$args['footer_text'] = __( '<p>This text is displayed below the options panel. It isn\'t required, but more info is always better! The footer_text field accepts all HTML.</p>', 'redux-framework-demo' );
+	$args['footer_text'] = __( '<p>This text is displayed below the options panel. It isn\'t required, but more info is always better! The footer_text field accepts all HTML.</p>', 'uamp' );
 
 	Redux::setArgs( $opt_name, $args );
 
@@ -148,7 +148,7 @@
 
 
 	// Set the help sidebar
-	$content = __( '<p>This is the sidebar content, HTML is allowed.</p>', 'redux-framework-demo' );
+	$content = __( '<p>This is the sidebar content, HTML is allowed.</p>', 'uamp' );
 	Redux::setHelpSidebar( $opt_name, $content );
 
 
@@ -164,38 +164,38 @@
 
 
 	Redux::setSection( $opt_name, array(
-		'title'      => __( 'General', 'redux-framework-demo' ),
+		'title'      => __( 'General', 'uamp' ),
 		'id'         => 'global-general',
 		'subsection' => true,
 		'fields'     => array(
 			array(
 				'id'       => 'uamp_is_amp',
 				'type'     => 'button_set',
-				'title'    => __( 'Redirect to AMP Version?', 'redux-framework-demo' ),
-				'subtitle' => __( 'Do you want to redirect your website to AMP Version?', 'redux-framework-demo' ),
-				'desc'     => __( 'Enable/Disable to force website to AMP Version', 'redux-framework-demo' ),
-				//Must provide key => value pairs for radio options
+				'title'    => __( 'Redirect to AMP Version?', 'uamp' ),
+				'subtitle' => __( 'Do you want to redirect your website to AMP Version?', 'uamp' ),
+				'desc'     => __( 'Enable/Disable to force website to AMP Version', 'uamp' ),
 				'options'  => array(
 					'enable' => 'Enable',
 					'disable' => 'Disable'
 				),
 				'default'  => 'disable'
 			),
+
 			array(
-				'id'       => 'opt-button-set-multi',
+				'id'       => 'enable_debug_mode',
 				'type'     => 'button_set',
-				'title'    => __( 'Button Set, Multi Select', 'redux-framework-demo' ),
-				'subtitle' => __( 'No validation can be done on this field type', 'redux-framework-demo' ),
-				'desc'     => __( 'This is the description field, again good for additional info.', 'redux-framework-demo' ),
-				'multi'    => true,
-				//Must provide key => value pairs for radio options
+				'title'    => __( 'Enable Debug Mode', 'uamp' ),
+				'subtitle' => __( 'Do you want to Enable Debug Mode?', 'uamp' ),
+				'desc'     => __( 'Enable/Disable Enable Debug Mode', 'uamp' ),
 				'options'  => array(
-					'1' => 'Opt 1',
-					'2' => 'Opt 2',
-					'3' => 'Opt 3'
+					'enable' => 'Enable',
+					'disable' => 'Disable'
 				),
-				'default'  => array( '2', '3' )
-			),
+				'default'  => 'disable'
+			)
+
+
+
 
 		)
 	) );
@@ -223,9 +223,10 @@
 			array(
 				'id' => 'uamp_twitter',
 				'type' => 'text',
+				'validate' => 'url',
 				'title' => esc_html__('Twitter', 'uamp'),
 				'desc'     => __( 'Twitter URL', 'uamp' ),
-				'default' => "#",
+				'default' => "https://twitter.com/jwthemeltd",
 			),
 
 			array(
@@ -233,7 +234,7 @@
 				'type' => 'text',
 				'title' => esc_html__('Facebook', 'uamp'),
 				'desc'     => __( 'Facebook URL', 'uamp' ),
-				'default' => "#",
+				'default' => "https://facebook/jwthemeltd",
 			),
 
 			array(
@@ -260,7 +261,7 @@
 	if ( file_exists( dirname( __FILE__ ) . '/../README.md' ) ) {
 		$section = array(
 			'icon'   => 'el el-list-alt',
-			'title'  => __( 'Documentation', 'redux-framework-demo' ),
+			'title'  => __( 'Documentation', 'uamp' ),
 			'fields' => array(
 				array(
 					'id'       => '17',
@@ -375,8 +376,8 @@
 		function dynamic_section( $sections ) {
 			//$sections = array();
 			$sections[] = array(
-				'title'  => __( 'Section via hook', 'redux-framework-demo' ),
-				'desc'   => __( '<p class="description">This is a section created by adding a filter to the sections array. Can be used by child themes to add/remove sections from the options.</p>', 'redux-framework-demo' ),
+				'title'  => __( 'Section via hook', 'uamp' ),
+				'desc'   => __( '<p class="description">This is a section created by adding a filter to the sections array. Can be used by child themes to add/remove sections from the options.</p>', 'uamp' ),
 				'icon'   => 'el el-paper-clip',
 				// Leave this as a blank section, no options just some intro text set above.
 				'fields' => array()

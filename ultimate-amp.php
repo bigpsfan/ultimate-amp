@@ -34,16 +34,6 @@ define( 'AMP_QUERY', 'amp');
 //16-7-18
 
 
-	if ( ! class_exists( 'ReduxFramework' ) ) {
-		// Redux Framework
-		require_once UAMP_DIR . '/inc/admin/redux-core/framework.php';
-		//Redux Options
-		require_once UAMP_DIR . '/inc/admin/admin-options.php';
-	}
-
-	if ( file_exists( UAMP_DIR . '/inc/uamp-options.php' ) ) {
-		require_once UAMP_DIR . '/inc/uamp-options.php';
-	}
 
 
 	class Ultimate_AMP {
@@ -143,11 +133,25 @@ define( 'AMP_QUERY', 'amp');
 			// rel=amphtml
 			add_action( 'wp_head', [ $this, 'add_rel_info'] );
 
-			//$this->uamp_check_debug_mode();
+			$this->uamp_check_debug_mode();
 
 			add_action( 'init', [ $this, 'uamp_init' ], 99 );
 			add_action('init', array( $this, 'uamp_register_menus'));
 			add_action('uamp_init',[ $this, 'uamp_auto_add_amp_menu_link_insert'],9999);
+
+
+
+			if ( ! class_exists( 'ReduxFramework' ) ) {
+				// Redux Framework
+				require_once UAMP_DIR . '/inc/admin/redux-core/framework.php';
+				//Redux Options
+				require_once UAMP_DIR . '/inc/admin/admin-options.php';
+			}
+
+			if ( file_exists( UAMP_DIR . '/inc/uamp-options.php' ) ) {
+				require_once UAMP_DIR . '/inc/uamp-options.php';
+			}
+
 
 		}
 
@@ -1118,15 +1122,9 @@ define( 'AMP_QUERY', 'amp');
 		}
 
 
-
-
-
-
-
-
         public function uamp_check_debug_mode(){
 		    global $uamp_options;
-			if ( 'enable' == $uamp_options['enable_debug_mode'] ) {
+			if ( $uamp_options['enable_debug_mode'] == 'enable') {
 				error_reporting( E_ALL );
 				ini_set( 'display_errors', 1 );
 			} else {
