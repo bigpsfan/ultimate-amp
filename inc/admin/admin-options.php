@@ -26,7 +26,7 @@
 			public $sections = [];
 			public $plugin;
 			public $ReduxFramework;
-			private $uamp_pro = "This is Demo Intro Text";
+			private $uamp_pro = "";
 
 			public function __construct() {
 				add_action( 'plugins_loaded', [$this, 'initSettings'], 10);

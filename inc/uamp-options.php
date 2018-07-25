@@ -7,14 +7,16 @@
 	 */
 
 
-	// If this file is called directly, abort.
-	if ( ! defined( 'ABSPATH' ) ) {
-		die();
-	}
+//	// If this file is called directly, abort.
+//	if ( ! defined( 'ABSPATH' ) ) {
+//		die();
+//	}
 
 	function uamp_mobile(){
 		global $uamp_options;
 		echo $uamp_options['uamp_twitter'];
+
+		echo "Liton Arefin";
 
 		return "Arefin";
 	}

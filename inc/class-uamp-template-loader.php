@@ -17,6 +17,8 @@
 		 */
 		protected $filter_prefix = 'uamp';
 
+		public $uamp_options;
+
 		/**
 		 * Directory name where custom templates for this plugin should be found in the theme.
 		 *

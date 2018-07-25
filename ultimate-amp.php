@@ -33,7 +33,6 @@ define( 'UAMP_DIR', dirname( __FILE__ ) );
 define( 'AMP_QUERY', 'amp');
 //16-7-18
 
-//define( 'UAMP_TMP_DIR', apply_filters( 'ultimate-amp/template/dir-name', 'uamp' ) );
 
 
 	include_once(ABSPATH . 'wp-admin/includes/plugin.php');
@@ -117,6 +116,19 @@ define( 'AMP_QUERY', 'amp');
 			add_action( 'init', [ $this, 'uamp_init' ], 99 );
 			add_action('init', array( $this, 'uamp_register_menus'));
 			add_action('uamp_init',[ $this, 'uamp_auto_add_amp_menu_link_insert'],9999);
+
+
+
+			if ( ! class_exists( 'ReduxFramework' ) && is_admin() ) {
+			    // Redux Framework
+				require_once UAMP_DIR . '/inc/admin/redux-core/framework.php';
+
+				// Register all the main options
+				require_once UAMP_DIR .'/inc/admin/admin-options.php';
+			}
+			require_once UAMP_DIR . '/inc/uamp-options.php';
+
+
 
 		}
 
@@ -476,10 +488,8 @@ define( 'AMP_QUERY', 'amp');
 		 * Include Required Files
 		 */
 		public function uamp_include_files() {
-
-			// Ultimate AMP Autoload Class
-			require_once UAMP_DIR . '/inc/class-uamp-autoload.php';
-			require_once UAMP_DIR . '/inc/uamp-options.php';
+			// Helper Functions
+			require_once UAMP_DIR . '/functions/helper.php';
 
 			require_once UAMP_DIR . '/inc/class-uamp-template-manager.php';
 			require_once UAMP_DIR . '/inc/class-uamp-template.php';
@@ -493,20 +503,9 @@ define( 'AMP_QUERY', 'amp');
 //			require_once( 'includes/class-amphtml-no-conflict.php' );
 
 
-
-			// Helper Functions
-			require_once UAMP_DIR . '/functions/helper.php';
-
+			// Ultimate AMP Autoload Class
+			require_once UAMP_DIR . '/inc/class-uamp-autoload.php';
 			UltimateAmpAutoload::register();
-
-
-			if ( !class_exists( 'ReduxFramework' )) {
-			    // Redux Framework
-				require_once ( UAMP_DIR . '/inc/admin/redux-core/framework.php' );
-
-				// Register all the Main Options
-				require_once UAMP_DIR .'/inc/admin/admin-options.php';
-			}
 
 		}
 

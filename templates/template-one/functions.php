@@ -116,6 +116,7 @@
 
 	function uamp_template_page(){
         if(is_page()){
+//            global $uamp_options;
 			$template = new Ultimate_Template_Loader();
 			return $template->get_template_part( 'template-parts/page' );
 
