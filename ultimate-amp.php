@@ -17,8 +17,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Ultimate AMP Plugin Constants
  */
 
-
-//16-7-18
 $uamp = new Ultimate_AMP();
 define( 'UAMP', $uamp->plugin_name);
 define( 'UAMP_VERSION', $uamp->version);
@@ -31,9 +29,6 @@ define( 'UAMP_TD', $uamp->localization_init());  // Ultimate AMP Text Domain
 define( 'UAMP_FILE', __FILE__ );
 define( 'UAMP_DIR', dirname( __FILE__ ) );
 define( 'AMP_QUERY', 'amp');
-//16-7-18
-
-
 
 
 	class Ultimate_AMP {
@@ -55,12 +50,6 @@ define( 'AMP_QUERY', 'amp');
 		 */
 		public $version = '1.0.0';
 
-		/*
-		 * Options variable
-		 */
-		static $uamp_options;
-
-		public $options;
 
 		/*
 		 * Plugin URL
@@ -78,10 +67,7 @@ define( 'AMP_QUERY', 'amp');
 		public $plugin_dir_url;
 
 		public $template;
-//
-//		public function __construct() {
-//			$this->uamp_options = $uamp_options;
-//		}
+
 
 		/*
 		 * Initialize Ultimate_AMP Class
@@ -181,64 +167,21 @@ define( 'AMP_QUERY', 'amp');
 			add_filter( 'do_parse_request', array ( $this, 'parse_request' ), 10, 3 );
 			add_filter( 'amphtml_is_mobile_get_redirect_url', array ( $this, 'view_original_redirect' ) );
 
-//          16-7-18
-			//Load Frontend Scripts and Styles
-//			add_action('init', [$this, 'uamp_enqueue_scripts']);
 
-//          16-7-18
-			//Register Ultimate AMP Menus
-
-			//After Theme Setup
-//          16-7-18
-//			add_action('after_setup_theme', [$this, 'uamp_after_theme_setup'], 5);
-
-			// Activation Hook
+			/**
+			 * Activation Hook
+			 * Triggers while Ultimate AMP Plugin is Active
+			 */
 			register_activation_hook(__FILE__, [$this, 'uamp_activate']);
 			register_deactivation_hook(__FILE__, [$this, 'uamp_deactivate']);
+
 
 			// Default AMP Plugin
 			add_action('plugins_loaded', [$this, 'uamp_deafult_amp_plugin'], 10);
 
-			// Load AMP Template Files
-//			add_filter('amp_post_template_file', [$this, 'uamp_custom_template'], 10, 2);
-
-//          16-7-18
-//			add_post_type_support('post', AMP_QUERY_VAR);
-//			add_filter('request', 'amp_force_query_var_value');
-//			add_action('wp', 'amp_maybe_add_actions', 100);
-
-			/**
-			 * Triggers while Ultimate AMP Plugin is Active
-			 */
-
-
-			// Rewrite rules for Ultimate AMP
-//          16-7-18
-//			add_rewrite_endpoint(Ultimate_AMP_Helper:: amp_get_slug(), EP_PERMALINK);
-//			add_rewrite_endpoint( $this->uamp_get_endpoint(), EP_ALL );
-//
-//			add_filter('init', [$this, 'uamp_add_rewrite']);
-//			add_filter('init', [$this, 'append_index_rewrite_rule']);
-//
-//			add_action('pre_get_posts', [$this, 'isolate_pre_get_posts_start'], 1);
-//			add_action('pre_get_posts', [$this, 'isolate_pre_get_posts_end'], 100);
-//          16-7-18
 
 			// Redirect the old url of amp page to the updated url.
-//          16-7-18
-//			add_filter('old_slug_redirect_url', [$this, 'amp_redirect_old_slug_to_new_url']);
-
-
-			// Automatic Redirect Mobile Users
-//          16-7-18
-//		    add_action( 'template_include',  [$this, 'uamp_include_template_files'], 9999 );
-//          add_action('template_redirect', [$this, 'uamp_auto_redirect_to_amp'], 100);
-//			add_action('template_redirect', [$this, 'uamp_page_status_check'], 100);
-
-
-			// Ultimate AMP Scripts/Styles
-//          16-7-18
-//			add_action('ultimate-amp/template/enqueue-scripts', [$this, 'enqueue_components_scripts']);
+			add_filter('old_slug_redirect_url', [$this, 'amp_redirect_old_slug_to_new_url']);
 
 
 			if (class_exists('Jetpack') && !(defined('IS_WPCOM') && IS_WPCOM)) {
@@ -559,16 +502,16 @@ define( 'AMP_QUERY', 'amp');
 				if ( $query->is_search ) {
 					$query->set( 'meta_query', array (
 						'relation' => 'OR',
-						array (
-							'key'     => 'amphtml-exclude',
-							'value'   => '',
-							'compare' => 'NOT EXISTS'
-						),
-						array (
-							'key'     => 'amphtml-exclude',
-							'value'   => 'true',
-							'compare' => '!='
-						),
+//						array (
+//							'key'     => 'amphtml-exclude',
+//							'value'   => '',
+//							'compare' => 'NOT EXISTS'
+//						),
+//						array (
+//							'key'     => 'amphtml-exclude',
+//							'value'   => 'true',
+//							'compare' => '!='
+//						),
 					) );
 				}
 			}
@@ -616,10 +559,6 @@ define( 'AMP_QUERY', 'amp');
 		}
 
 
-		public function uamp_custom_template() {
-			Ultimate_AMP_Helper::uamp_include_template_file();
-		}
-
 
 		/*
 		 * Register Ultimate AMP Menus
@@ -643,13 +582,6 @@ define( 'AMP_QUERY', 'amp');
 		 */
 		public function localization_init() {
 			load_plugin_textdomain('uamp', false, dirname(plugin_basename(__FILE__)) . '/languages/');
-		}
-
-		/*
-		 * Scripts and Styles
-		 */
-		public function uamp_enqueue_scripts() {
-
 		}
 
 
@@ -740,64 +672,6 @@ define( 'AMP_QUERY', 'amp');
 		}
 
 
-		public function isolate_pre_get_posts_end(&$wp_query) {
-
-			global $better_amp_isolate_pre_get_posts;
-
-			if (!is_admin() && $wp_query->is_main_query()) {
-				if ($better_amp_isolate_pre_get_posts) {
-					$wp_query->query_vars = $better_amp_isolate_pre_get_posts;
-					unset($better_amp_isolate_pre_get_posts);
-				}
-			}
-		}
-
-
-		public function isolate_pre_get_posts_start($wp_query) {
-
-			global $better_amp_isolate_pre_get_posts;
-
-
-			if (!is_admin() && $wp_query->is_main_query()) {
-				$better_amp_isolate_pre_get_posts = $wp_query->query_vars;
-			}
-
-		}
-
-
-		public function uamp_include_template_files() {
-
-			$include = $this->template_loader();
-
-			if ($include = apply_filters('ultimate-amp/template/include', $include)) {
-				//			return $include;
-			} else if (current_user_can('switch_themes')) {
-				wp_die(__('Ultimate AMP Theme Was Not Found!', 'uamp'));
-			} else {
-				return UAMP_DIR . '/no-template.php';
-			}
-
-		}
-
-
-		public function enqueue_components_scripts() { ?>
-            <script async src="https://cdn.ampproject.org/v0.js"></script>
-
-            <style amp-boilerplate="">body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}</style><noscript><style amp-boilerplate="">body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
-
-
-
-            <script custom-element="amp-carousel" src="https://cdn.ampproject.org/v0/amp-carousel-0.1.js"
-                    async></script>
-            <script custom-element="amp-sidebar" src="https://cdn.ampproject.org/v0/amp-sidebar-0.1.js"
-                    async></script>
-            <script custom-element="amp-accordion" src="https://cdn.ampproject.org/v0/amp-accordion-0.1.js"
-                    async></script>
-            <script custom-element="amp-form" src="https://cdn.ampproject.org/v0/amp-form-0.1.js" async></script>
-            <script custom-element="amp-instagram" src="https://cdn.ampproject.org/v0/amp-instagram-0.1.js"
-                    async></script>
-
-		<?php }
 
 
 		public function better_amp_get_template_directory() {
@@ -895,22 +769,6 @@ define( 'AMP_QUERY', 'amp');
 		}
 
 
-		public function append_index_rewrite_rule() {
-			add_rewrite_rule(self::AMP_QUERY . '/?$', "index.php?amp=index", 'top');
-		}
-
-
-		public function uamp_add_rewrite() {
-			$this->uamp_add_rewrite_startpoint('amp', EP_ALL);
-
-			/**
-			 * automattic amp compatibility
-			 */
-			$amp_qv = defined('AMP_QUERY_VAR') ? AMP_QUERY_VAR : 'amp';
-			add_rewrite_endpoint($amp_qv, EP_PERMALINK);
-		}
-
-
 		public function add_startpint($name, $places, $query_var = true, $single_match = true) {
 
 			global $wp;
@@ -934,49 +792,6 @@ define( 'AMP_QUERY', 'amp');
 		}
 
 
-		//
-		function uamp_page_status_check() {
-			global $wp;
-			//		$ampforwp_404_url   = add_query_arg( '', '', home_url( $wp->request ) );
-			//		$ampforwp_404_url = trailingslashit($ampforwp_404_url );
-			//		$ampforwp_404_url = dirname($ampforwp_404_url);
-			////		print_r($ampforwp_404_url);
-			//		wp_redirect( esc_url( $ampforwp_404_url )  , 301 );
-			//		exit();
-
-			$redirection_location = '';
-			$current_location = '';
-			$home_url = '';
-			$blog_page_id = '';
-
-			$current_location = home_url($wp->request);
-			$home_url = get_bloginfo('url');
-
-
-			if (is_archive()) {
-				$redirection_location = add_query_arg('', '', home_url($wp->request));
-				$redirection_location = trailingslashit($redirection_location);
-				$redirection_location = dirname($redirection_location);
-				wp_safe_redirect($redirection_location);
-				exit;
-			}
-
-			if (is_front_page() && $current_location == $home_url) {
-				return;
-			}
-
-			if (is_archive()) {
-				return;
-			}
-
-			if (is_front_page()) {
-				$redirection_location = $home_url;
-			}
-
-			wp_safe_redirect($redirection_location);
-			exit;
-
-		}
 
 
 		/*
@@ -1032,10 +847,6 @@ define( 'AMP_QUERY', 'amp');
 			}
 
 
-			//			$query_arg_array = $wp->query_vars;
-
-			//			if ((is_home() || is_archive()) && $wp->query_vars['paged'] >= '2') {
-
 			if (is_home() || is_front_page() || is_archive()) {
 				global $wp;
 				$new_url = home_url($wp->request);
@@ -1045,23 +856,18 @@ define( 'AMP_QUERY', 'amp');
 				$impode_url = implode('/', $explode_path);
 				$amp_url = untrailingslashit($impode_url);
 
-				//				print_r($amp_url);
 
+				return $this->uamp_home_template();
 
-				//				return $this->uamp_home_template();
+                $query_arg_array = $wp->query_vars;
 
-				//				$query_arg_array = $wp->query_vars;
-				//				print_r($query_arg_array);
+                if( array_key_exists( "page" , $query_arg_array  ) ) {
+                    $page = $wp->query_vars['page'];
+                }
 
-				//				if( array_key_exists( "page" , $query_arg_array  ) ) {
-				//					$page = $wp->query_vars['page'];
-				//					print_r($page);
-				//
-				//				}
-
-				//				if ( $page >= '2') {
-				//					$amp_url = trailingslashit( $amp_url  . '?page=' . $page);
-				//				} ?>
+                if ( $page >= '2') {
+                    $amp_url = trailingslashit( $amp_url  . '?page=' . $page);
+                } ?>
 
                 <link rel="canonical"
                       href="<?php echo user_trailingslashit(esc_url(apply_filters('uamp_modify_rel_url', $amp_url))) ?>">
@@ -1076,51 +882,7 @@ define( 'AMP_QUERY', 'amp');
 				//				}
 			}
 
-			if (is_404()) {
-				$amp_url = 'https://jeweltheme.com';
-
-				return;
-			}
-
-
 			return $amp_url;
-		}
-
-
-		/*
-		 * Automatic Redirect to AMP version of Mobile Users
-		 */
-		public function uamp_auto_redirect_to_amp() {
-
-			//		if ( ! $this->uamp_is_amp_endpoint() ) {
-			//			return;
-			//		}
-
-
-			//		$redirect_url = '';
-			$redirect_url = $this->uamp_generate_amphtml();
-
-			//        if(is_home() || is_front_page()){
-			//			$redirect_url = $this->uamp_home_template();
-			//        }
-
-			$request_url = $this->get_requested_url();
-
-
-			if ($this->uamp_is_amp_endpoint()) {
-
-				return $this->template_loader();
-			}
-
-
-			if (wp_is_mobile()) {
-				if ($redirect_url) {
-					wp_redirect($redirect_url);
-					exit();
-				}
-			}
-
-			return;
 		}
 
 

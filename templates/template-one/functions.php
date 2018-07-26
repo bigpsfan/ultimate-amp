@@ -9,6 +9,7 @@
 	add_action('uamp/template/post/meta/author', 'uamp_template_post_author_meta');
 	add_action('uamp/template/post', 'uamp_template_post');
 	add_action('uamp/template/home/loop', 'uamp_template_home_loop');
+	add_action('uamp/template/search/query', 'uamp_template_search_query');
 	add_action('uamp/template/footer', 'uamp_template_footer');
 
 
@@ -126,7 +127,13 @@
             $template = new Ultimate_Template_Loader();
             return $template->get_template_part( 'inc/loop' );
 		}
+    }
 
+	function uamp_template_search_query(){
+		if( is_search() ){
+            $template = new Ultimate_Template_Loader();
+            return $template->get_template_part( 'template-parts/search' );
+		}
     }
 
 	function uamp_template_post_meta(){

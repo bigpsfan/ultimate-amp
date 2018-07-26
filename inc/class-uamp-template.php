@@ -32,19 +32,11 @@ class Ultimate_AMP_Template extends Ultimate_AMP_Abstract_Template {
 //		$this->default_logo = $this->options->get( 'default_logo' );
 //		$this->favicon      = $this->get_favicon();
 
-//		add_action( 'amphtml_template_head', array ( $this, 'page_fonts' ) );
-		add_action( 'amphtml_template_css', array ( $this, 'get_custom_css' ) );
+//		add_action( 'amphtml_template_css', array ( $this, 'get_custom_css' ) );
 
-		/*
-		 * Add extra css
-		 */
-		add_action( 'amphtml_template_css', array ( $this, 'set_extra_css' ), 100 );
-//
-//		if ( $this->options->get( 'header_menu' ) ) {
-//			$menu_handler = $this->get_menu_handler( $this->options->get( 'header_menu_type' ) );
-//			$this->add_embedded_element( $menu_handler );
-//		}
-		add_action( 'amphtml_before_header', array ( $this, 'remove_term_link_filter' ) );
+//		add_action( 'amphtml_template_css', array ( $this, 'set_extra_css' ), 100 );
+
+//		add_action( 'amphtml_before_header', array ( $this, 'remove_term_link_filter' ) );
 	}
 
 	public function update_menu_item_url( $item ) {
@@ -59,42 +51,16 @@ class Ultimate_AMP_Template extends Ultimate_AMP_Abstract_Template {
 	}
 
 
-	public function page_fonts() {
-		$used_fonts = array ();
-
-//		foreach ( $this->options->get_tabs()->get( 'appearance' )->get_font_fields( 'fonts' ) as $font ) {
-//			$font_name = $this->options->get( $font['id'] );
-//			if ( $font_name != $font['default'] && ! in_array( $font_name, $used_fonts ) ) {
-//				$additional_styles = apply_filters( 'amphtml_font_styles', ':400,700,400italic,500,500italic' );
-//				echo '<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto' . $additional_styles . '">' . PHP_EOL;
-//			}
-//			$used_fonts[]               = $font_name;
-//			$this->fonts[ 'id' ] = str_replace( '+', ' ', 'Roboto' );
-//		}
-
-
-		$additional_styles = apply_filters( 'amphtml_font_styles', ':400,700,400italic,500,500italic' );
-		echo '<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto' . $additional_styles . '">' . PHP_EOL;
-		$this->fonts[ 'id' ] = str_replace( '+', ' ', 'Roboto' );
-
-	}
 
 	public function remove_term_link_filter() {
 		remove_filter( 'term_link', array ( $this, 'update_meta_links' ) );
 	}
+
 	public function update_meta_links( $termlink ) {
 		return $this->get_amphtml_link( $termlink );
 	}
 	public function get_amphtml_link( $link, $id = '' ) {
 		return '';
-	}
-
-	public function get_custom_css() {
-//		$content_width      = absint( $this->options->get( 'content_width' ) );
-		$content_width      = '600';
-		$main_content_width = $content_width + 32;
-
-		echo PHP_EOL . ".amphtml-title div, .footer .inner { max-width: {$content_width}px; margin: 0 auto;}" . "#main .inner { max-width: {$main_content_width}px; } " . $this->get_element_fonts() . $this->get_element_colors();
 	}
 
 	public function get_template_name( $element ) {
@@ -133,7 +99,6 @@ class Ultimate_AMP_Template extends Ultimate_AMP_Abstract_Template {
 
 
 		$is_loaded = apply_filters( 'amphtml_template_head', false, $this );
-//		print_r($this);
 
 //		print_r(apply_filters( 'uamp_template_load', false, $this ));
 
@@ -144,8 +109,6 @@ class Ultimate_AMP_Template extends Ultimate_AMP_Abstract_Template {
 		if ( $is_loaded ) {
 			return $template;
 		}
-
-
 
 		switch ( true ) {
 
@@ -173,20 +136,17 @@ class Ultimate_AMP_Template extends Ultimate_AMP_Abstract_Template {
 				$template->get_template_part('archive');
 				break;
 
-			case is_archive():
-				$template->get_template_part('archive');
-				break;
+//			case is_archive():
+//				$template->get_template_part('archive');
+//				break;
 
 			case is_404():
 				$template->get_template_part('404');
 				break;
 
-//			case is_search():
-//				$this->set_template_content( 'archive' );
-//				$this->set_blocks( 'search' );
-//				$this->title = __( 'Search Results', 'amphtml' );
-//				$this->set_schema_metadata();
-//				break;
+			case is_search():
+				$template->get_template_part('search');
+				break;
 		}
 	}
 
