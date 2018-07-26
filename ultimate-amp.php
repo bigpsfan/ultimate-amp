@@ -117,7 +117,7 @@ class Ultimate_AMP {
         add_image_size( 'uamp-image-small', ceil( $uamp_content_width / 3 ) );
 
         // rel=amphtml
-        add_action( 'wp_head', [ $this, 'add_rel_info'] );
+        add_action( 'wp_head', [ $this, 'uamp_add_rel_info'] );
 
         $this->uamp_check_debug_mode();
 
@@ -158,12 +158,12 @@ class Ultimate_AMP {
         //Ultimate AMP Actions/Hooks
         do_action('uamp_init');
 
-        add_action( 'template_redirect', array ( $this, 'load_amphtml' ) );
+        add_action( 'template_redirect', array ( $this, 'uamp_load_template' ) );
 
-        add_rewrite_endpoint( $this->get_endpoint(), EP_ALL );
+        add_rewrite_endpoint( $this->uamp_get_endpoint(), EP_ALL );
         add_action( 'pre_get_posts', array ( $this, 'search_filter' ) );
         add_filter( 'do_parse_request', array ( $this, 'parse_request' ), 10, 3 );
-        add_filter( 'amphtml_is_mobile_get_redirect_url', array ( $this, 'view_original_redirect' ) );
+        add_filter( 'uamp_is_mobile_get_redirect_url', array ( $this, 'view_original_redirect' ) );
 
 
         /**
@@ -209,7 +209,7 @@ class Ultimate_AMP {
         $wp->query_vars       = array ();
         $post_type_query_vars = array ();
 
-        $amp_endpoint                    = $this->get_endpoint();
+        $amp_endpoint                    = $this->uamp_get_endpoint();
         $wp->query_vars[ $amp_endpoint ] = '';
 
         if ( is_array( $extra_query_vars ) ) {
@@ -460,15 +460,6 @@ class Ultimate_AMP {
 
         require_once UAMP_DIR . '/inc/class-uamp-template-manager.php';
         require_once UAMP_DIR . '/inc/class-uamp-template.php';
-//			require_once UAMP_DIR . '/inc/class-uamp-sanitize.php';
-//			require_once UAMP_DIR . '/inc/class-uamp-shortcodes.php';
-
-//			require_once( 'includes/class-amphtml-template-abstract.php' );
-//			require_once( 'includes/class-amphtml-template.php' );
-//			require_once( 'includes/class-amphtml-options.php' );
-//			require_once( 'includes/class-amphtml-update.php' );
-//			require_once( 'includes/class-amphtml-no-conflict.php' );
-
 
         // Ultimate AMP Autoload Class
         require_once UAMP_DIR . '/inc/class-uamp-autoload.php';
@@ -500,16 +491,16 @@ class Ultimate_AMP {
             if ( $query->is_search ) {
                 $query->set( 'meta_query', array (
                     'relation' => 'OR',
-//						array (
-//							'key'     => 'amphtml-exclude',
-//							'value'   => '',
-//							'compare' => 'NOT EXISTS'
-//						),
-//						array (
-//							'key'     => 'amphtml-exclude',
-//							'value'   => 'true',
-//							'compare' => '!='
-//						),
+						array (
+							'key'     => 'uamp-exclude',
+							'value'   => '',
+							'compare' => 'NOT EXISTS'
+						),
+						array (
+							'key'     => 'uamp-exclude',
+							'value'   => 'true',
+							'compare' => '!='
+						),
                 ) );
             }
         }
@@ -653,6 +644,10 @@ class Ultimate_AMP {
 
 
     public function uamp_get_endpoint() {
+        global $uamp_options;
+        $uamp_endpoint = $uamp_options['uamp_endpoint']; //Feature needs to be added
+
+
         $endpoint_opt = get_option( 'uamp_endpoint' );
         $endpoint     = ( $endpoint_opt ) ? $endpoint_opt : self::AMP_QUERY;
 
@@ -820,71 +815,6 @@ class Ultimate_AMP {
 
 
     /*
-     * Generate AMP to HTML
-     */
-    public function uamp_generate_amphtml() {
-        global $wp, $post;
-        $post_id = '';
-        $current_url = '';
-        $check_endpoints = true;
-
-        $current_archive_url = '';
-        $amp_url = '';
-        $remove = '';
-        $query_arg_array = '';
-        $page = '';
-
-        if (is_singular()) {
-            $post_id = get_the_ID();
-            $request_url = get_permalink(get_queried_object_id());
-            $explode_url = explode('/', $request_url);
-            $amp_append = 'amp';
-            array_splice($explode_url, 4, 0, $amp_append);
-            $impode_url = implode('/', $explode_url);
-            $amp_url = untrailingslashit($impode_url);
-        }
-
-
-        if (is_home() || is_front_page() || is_archive()) {
-            global $wp;
-            $new_url = home_url($wp->request);
-            $explode_path = explode("/", $new_url);
-            $inserted = [AMP_QUERY_VAR];
-            array_splice($explode_path, 3, 0, $inserted);
-            $impode_url = implode('/', $explode_path);
-            $amp_url = untrailingslashit($impode_url);
-
-
-            return $this->uamp_home_template();
-
-            $query_arg_array = $wp->query_vars;
-
-            if( array_key_exists( "page" , $query_arg_array  ) ) {
-                $page = $wp->query_vars['page'];
-            }
-
-            if ( $page >= '2') {
-                $amp_url = trailingslashit( $amp_url  . '?page=' . $page);
-            } ?>
-
-            <link rel="canonical"
-                  href="<?php echo user_trailingslashit(esc_url(apply_filters('uamp_modify_rel_url', $amp_url))) ?>">
-            <link rel="amphtml"
-                  href="<?php echo user_trailingslashit(esc_url(apply_filters('uamp_modify_rel_url', $amp_url))) ?>"/>
-            <?php
-
-            //				wp_redirect( esc_url( $amp_url )  , 301 );
-            //				exit();
-
-
-            //				}
-        }
-
-        return $amp_url;
-    }
-
-
-    /*
      * Check URL Endpoints for AMP
      */
     public function uamp_is_amp_endpoint() {
@@ -915,7 +845,7 @@ class Ultimate_AMP {
 
 
 
-    public function add_rel_info() {
+    public function uamp_add_rel_info() {
         $url = $this->uamp_get_rel_info();
         if ( ! empty( $url ) ) {
             echo "<link rel='amphtml' href='$url' />";
@@ -965,7 +895,7 @@ class Ultimate_AMP {
 
     public function is_excluded_post( $id ) {
         $allowed_post_types = is_array( $this->options->get( 'post_types' ) ) ? $this->options->get( 'post_types' ) : array ();
-        $is_excluded        = ( "true" === get_post_meta( $id, 'amphtml-exclude', true ) || false == in_array( get_post_type( $id ), $allowed_post_types ) );
+        $is_excluded        = ( "true" === get_post_meta( $id, 'uamp-exclude', true ) || false == in_array( get_post_type( $id ), $allowed_post_types ) );
 
         return apply_filters( 'uamp_is_excluded_post', $is_excluded, $id );
     }
@@ -975,7 +905,7 @@ class Ultimate_AMP {
 
         $queried_object_id = $wp_query->get_queried_object_id();
 
-        if ( $wp->request === $this->get_endpoint() ) {
+        if ( $wp->request === $this->uamp_get_endpoint() ) {
             $queried_object_id = get_option( 'page_on_front' );
         }
 
@@ -987,14 +917,14 @@ class Ultimate_AMP {
     }
 
 
-    public function load_amphtml() {
+    public function uamp_load_template() {
         global $wp;
 
         $queried_object_id = $this->get_queried_object_id();
 
-        do_action( 'before_load_amphtml', $queried_object_id );
+        do_action( 'before_uamp_load_template', $queried_object_id );
 
-        $redirect_url = $this->get_redirect_url( $wp, $queried_object_id );
+        $redirect_url = $this->uamp_get_redirect_url( $wp, $queried_object_id );
         if ( $redirect_url ) {
             wp_redirect( $redirect_url );
             exit();
@@ -1010,9 +940,9 @@ class Ultimate_AMP {
 
             $this->template->load();
 
-            $this->template = apply_filters( 'amphtml_template_load_after', $this->template );
+            $this->template = apply_filters( 'after_uamp_load_template', $this->template );
 
-            do_action( 'amphtml_before_render', $this->template );
+            do_action( 'before_uamp_load_template', $this->template );
 
             echo $this->template->render();
 
@@ -1021,7 +951,8 @@ class Ultimate_AMP {
         }
     }
 
-    public function get_redirect_url( $wp, $queried_object_id ) {
+
+    public function uamp_get_redirect_url( $wp, $queried_object_id ) {
         $url       = '';
         $post      = get_post( $queried_object_id );
 
@@ -1042,11 +973,11 @@ class Ultimate_AMP {
             }
         } else if ( apply_filters( 'uamp_is_mobile_get_redirect_url', $is_mobile ) && ! post_password_required( $post_id ) ) {
             if ( '' != get_option( 'permalink_structure' ) ) {
-                $url = home_url( $wp->request ) . '/' . $this->get_endpoint() . '/';
+                $url = home_url( $wp->request ) . '/' . $this->uamp_get_endpoint() . '/';
             } else {
                 $args = array ();
                 parse_str( $_SERVER['QUERY_STRING'], $args );
-                $args[ $this->get_endpoint() ] = 1;
+                $args[ $this->uamp_get_endpoint() ] = 1;
                 $url                           = add_query_arg( $args );
             }
         }
@@ -1062,16 +993,16 @@ class Ultimate_AMP {
 
     public function get_search_redirect_url() {
         if ( get_query_var( 's' ) ) {
-            $url = '/' . 'search' . '/' . get_query_var( 's' ) . '/' . $this->get_endpoint() . '/';
+            $url = '/' . 'search' . '/' . get_query_var( 's' ) . '/' . $this->uamp_get_endpoint() . '/';
         } else {
-            $url = '/' . '?s' . '&' . $this->get_endpoint() . '=1';
+            $url = '/' . '?s' . '&' . $this->uamp_get_endpoint() . '=1';
         }
 
         return $url;
     }
 
     public function get_excluded_redirect_url( $wp, $queried_object_id ) {
-        $endpoint = $this->get_endpoint();
+        $endpoint = $this->uamp_get_endpoint();
         if ( $queried_object_id ) {
             $url = get_permalink( $queried_object_id );
         } else if ( '' != get_option( 'permalink_structure' ) ) {
@@ -1081,13 +1012,6 @@ class Ultimate_AMP {
         }
 
         return $url;
-    }
-
-    public function get_endpoint() {
-        $endpoint_opt = get_option( 'amphtml_endpoint' );
-        $endpoint     = ( $endpoint_opt ) ? $endpoint_opt : self::AMP_QUERY;
-
-        return $endpoint;
     }
 
 
