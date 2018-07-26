@@ -30,11 +30,11 @@ class Uamp_Scripts extends WP_Scripts {
 }
 
 
-add_filter( 'script_loader_tag', 'better_amp_handle_scripts_tag_attrs', 99, 2 );
+add_filter( 'script_loader_tag', 'uamp_handle_scripts_tag_attrs', 99, 2 );
 
-function better_amp_handle_scripts_tag_attrs( $tag, $handle ) {
+function uamp_handle_scripts_tag_attrs( $tag, $handle ) {
 
-	$scripts = better_amp_scripts();
+	$scripts = uamp_scripts();
 
 	if ( isset( $scripts->registered[ $handle ] ) ) {
 
@@ -53,7 +53,7 @@ function better_amp_handle_scripts_tag_attrs( $tag, $handle ) {
 }
 
 
-add_filter( 'script_loader_src', 'better_amp_handle_scripts_tag_src', 99, 2 );
+add_filter( 'script_loader_src', 'uamp_handle_scripts_tag_src', 99, 2 );
 
 /**
  * @param $src       The source of the enqueued script.
@@ -63,9 +63,9 @@ add_filter( 'script_loader_src', 'better_amp_handle_scripts_tag_src', 99, 2 );
  *
  * @return mixed
  */
-function better_amp_handle_scripts_tag_src( $src, $handle ) {
+function uamp_handle_scripts_tag_src( $src, $handle ) {
 
-	$scripts = better_amp_scripts();
+	$scripts = uamp_scripts();
 
 	if ( isset( $scripts->registered[ $handle ] ) ) {
 		$src = remove_query_arg( 'ver', $src );

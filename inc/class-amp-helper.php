@@ -174,7 +174,7 @@
 		 */
 		public function is_wp_amp() {
 			$endpoint_opt = get_option( 'uamp_endpoint' );
-			$endpoint     = ( $endpoint_opt ) ? $endpoint_opt : AMPHTML::AMP_QUERY;
+			$endpoint     = ( $endpoint_opt ) ? $endpoint_opt : Ultimate_AMP::AMP_QUERY;
 
 			if ( '' == get_option( 'permalink_structure' ) ) {
 				parse_str( $_SERVER['QUERY_STRING'], $url );

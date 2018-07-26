@@ -12,9 +12,6 @@
 
 class Ultimate_AMP_Shortcode {
 
-	/**
-	 * @var AMPHTML_Template
-	 */
 	protected $template;
 
 	protected $available_ads = array ( 'adsense', 'doubleclick' );
@@ -28,10 +25,10 @@ class Ultimate_AMP_Shortcode {
 		add_shortcode( 'wp-amp-switcher', array ( $this, 'do_switch' ) );
 		add_shortcode( 'wp-amp-accordion', array ( $this, 'accordion' ) );
 		add_shortcode( 'wp-amp-accordion-section', array ( $this, 'accordion_section' ) );
-		add_filter( 'the_content', array ( $this, 'amphtml_shortcode_fix' ) );
+		add_filter( 'the_content', array ( $this, 'uamp_shortcode_fix' ) );
 	}
 
-	public function amphtml_shortcode_fix( $content ) {
+	public function uamp_shortcode_fix( $content ) {
 		// array of custom shortcodes requiring the fix
 		$block = join( "|", array ( "wp-amp-accordion", "wp-amp-accordion-section" ) );
 		// opening tag
@@ -71,7 +68,7 @@ class Ultimate_AMP_Shortcode {
 		}
 
 		$this->template->related_atts = shortcode_atts( array (
-			'title' => __( 'You May Also Like', 'amphtml' ),
+			'title' => __( 'You May Also Like', 'uamp' ),
 			'count' => 3,
 		), $atts );
 
@@ -84,7 +81,7 @@ class Ultimate_AMP_Shortcode {
 		}
 
 		$this->template->recent_atts = shortcode_atts( array (
-			'title' => __( 'Latest blog posts', 'amphtml' ),
+			'title' => __( 'Latest blog posts', 'uamp' ),
 			'count' => 3,
 		), $atts );
 
@@ -131,7 +128,7 @@ class Ultimate_AMP_Shortcode {
 		}
 
 		$atts = shortcode_atts( array (
-			'title' => __( 'Switch to default version', 'amphtml' )
+			'title' => __( 'Switch to default version', 'uamp' )
 		), $atts );
 
 		return sprintf( "<a href=%s>%s</a>", $this->template->get_canonical_url(), $atts['title'] );

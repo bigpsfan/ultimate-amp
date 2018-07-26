@@ -27,24 +27,16 @@ class Ultimate_AMP_Template extends Ultimate_AMP_Abstract_Template {
 		$this->sanitizer    = new Ultimate_AMP_Sanitize( $this );
 		$this->doc_title    = function_exists( 'wp_get_document_title' ) ? wp_get_document_title() : wp_title( '', false );
 		$this->base_url     = home_url() . '/';
-//		$this->blog_name    = $this->options->get( 'logo_text' );
-//		$this->logo         = $this->options->get( 'logo' );
-//		$this->default_logo = $this->options->get( 'default_logo' );
-//		$this->favicon      = $this->get_favicon();
 
-//		add_action( 'amphtml_template_css', array ( $this, 'get_custom_css' ) );
-
-//		add_action( 'amphtml_template_css', array ( $this, 'set_extra_css' ), 100 );
-
-//		add_action( 'amphtml_before_header', array ( $this, 'remove_term_link_filter' ) );
+		add_action( 'uamp_before_header', array ( $this, 'remove_term_link_filter' ) );
 	}
 
 	public function update_menu_item_url( $item ) {
-		$avoid_amp_class = apply_filters( 'amphtml_no_amp_menu_link', 'no-amp' );
+		$avoid_amp_class = apply_filters( 'uamp_no_amp_menu_link', 'no-amp' );
 
 		if ( 'custom' != $item->object && false === array_search( $avoid_amp_class, $item->classes ) ) {
 			$id        = ( $item->type == 'taxonomy' ) ? '' : $item->object_id;
-			$item->url = $this->get_amphtml_link( $item->url, $id );
+			$item->url = $this->get_uamp_link( $item->url, $id );
 		}
 
 		return $item;
@@ -57,9 +49,9 @@ class Ultimate_AMP_Template extends Ultimate_AMP_Abstract_Template {
 	}
 
 	public function update_meta_links( $termlink ) {
-		return $this->get_amphtml_link( $termlink );
+		return $this->get_uamp_link( $termlink );
 	}
-	public function get_amphtml_link( $link, $id = '' ) {
+	public function get_uamp_link( $link, $id = '' ) {
 		return '';
 	}
 
@@ -80,7 +72,7 @@ class Ultimate_AMP_Template extends Ultimate_AMP_Abstract_Template {
 			}
 		}
 
-		return apply_filters( 'amphtml_template_name', $name, $element, $this );
+		return apply_filters( 'uamp_template_name', $name, $element, $this );
 	}
 
 
@@ -98,7 +90,7 @@ class Ultimate_AMP_Template extends Ultimate_AMP_Abstract_Template {
 		);
 
 
-		$is_loaded = apply_filters( 'amphtml_template_head', false, $this );
+		$is_loaded = apply_filters( 'uamp_template_head', false, $this );
 
 //		print_r(apply_filters( 'uamp_template_load', false, $this ));
 
@@ -162,7 +154,7 @@ class Ultimate_AMP_Template extends Ultimate_AMP_Abstract_Template {
 		$this->modified_timestamp = get_post_modified_time( 'U', false, $this->post );
 		$this->author             = get_userdata( $this->post->post_author );
 		$this->content            = $this->get_content( $this->post );
-		$this->content            = apply_filters( 'amphtml_single_content', $this->content );
+		$this->content            = apply_filters( 'uamp_single_content', $this->content );
 		$this->content            = $this->sanitizer->sanitize_content( $this->content );
 		$this->content            = $this->multipage_content( $this->content );
 		$this->featured_image     = $this->get_featured_image();
@@ -177,8 +169,8 @@ class Ultimate_AMP_Template extends Ultimate_AMP_Abstract_Template {
 	public function get_content( $post ) {
 		$content = $post->post_content;
 
-		if ( get_post_meta( $post->ID, "amphtml-override-content", true ) ) {
-			$content = get_post_meta( $post->ID, "amphtml-custom-content", true );
+		if ( get_post_meta( $post->ID, "uamp-override-content", true ) ) {
+			$content = get_post_meta( $post->ID, "uamp-custom-content", true );
 			remove_filter( 'the_content', 'siteorigin_panels_filter_content' );
 		}
 //		if ( $this->options->get( 'default_the_content' ) ) {
@@ -226,7 +218,7 @@ class Ultimate_AMP_Template extends Ultimate_AMP_Abstract_Template {
 
 
 	public function get_default_the_content_hooks() {
-		return apply_filters( 'amphtml_the_content', array (
+		return apply_filters( 'uamp_the_content', array (
 			'11' => array ( 'capital_P_dangit', 'do_shortcode' ),
 			'10' => array (
 				'wptexturize',
@@ -235,8 +227,8 @@ class Ultimate_AMP_Template extends Ultimate_AMP_Abstract_Template {
 				'shortcode_unautop',
 				'prepend_attachment',
 				'wp_make_content_images_responsive',
-				'amphtml_shortcode_fix',
-				'amphtml_content_ads',
+				'uamp_shortcode_fix',
+				'uamp_content_ads',
 			),
 			'8'  => array ( 'run_shortcode', 'autoembed' ),
 		) );
@@ -257,7 +249,7 @@ class Ultimate_AMP_Template extends Ultimate_AMP_Abstract_Template {
 		$this->template_content = $lit->get_template_part( $template );
 //		print_r($this->template_content);
 
-		add_action( 'amphtml_template_content', array ( $this, 'the_template_content' ) );
+		add_action( 'uamp_template_content', array ( $this, 'the_template_content' ) );
 
 		return $this;
 	}
@@ -320,7 +312,7 @@ class Ultimate_AMP_Template extends Ultimate_AMP_Abstract_Template {
 
 		$metadata = array (
 			'@context'         => 'http://schema.org',
-			'@type'            => apply_filters( 'amphtml_schema_type', 'WebPage', $this ),
+			'@type'            => apply_filters( 'uamp_schema_type', 'WebPage', $this ),
 			'headline'         => $this->get_title( $post->ID ),
 			'url'              => get_permalink( $post->ID ),
 			'datePublished'    => $post ? date( 'c', get_the_date( 'U', $post->ID ) ) : date( 'c' ),
@@ -371,16 +363,16 @@ class Ultimate_AMP_Template extends Ultimate_AMP_Abstract_Template {
 			}
 		}
 
-		return apply_filters( 'amphtml_metadata', $metadata, $post );
+		return apply_filters( 'uamp_metadata', $metadata, $post );
 	}
 
 
 	public function get_template_elements( $type, $return_default = true ) {
 //
-//		if ( false === ( $order = get_transient( 'amphtml_template_blocks_order' ) ) ) {
-//			$order = get_option( 'amphtml_template_blocks_order' );
+//		if ( false === ( $order = get_transient( 'uamp_template_blocks_order' ) ) ) {
+//			$order = get_option( 'uamp_template_blocks_order' );
 //			$order = maybe_unserialize( $order );
-//			set_transient( 'amphtml_template_blocks_order', $order );
+//			set_transient( 'uamp_template_blocks_order', $order );
 //		}
 //
 //		if ( isset( $order[ $type ] ) ) {
@@ -404,7 +396,7 @@ class Ultimate_AMP_Template extends Ultimate_AMP_Abstract_Template {
 	}
 
 	public function get_title( $id ) {
-		return ( get_post_meta( $id, "amphtml-override-title", true ) ) ? get_post_meta( $id, "amphtml-custom-title", true ) : get_the_title( $id );
+		return ( get_post_meta( $id, "uamp-override-title", true ) ) ? get_post_meta( $id, "uamp-custom-title", true ) : get_the_title( $id );
 	}
 
 
@@ -477,7 +469,7 @@ class Ultimate_AMP_Template extends Ultimate_AMP_Abstract_Template {
 	}
 
 	public function get_post_thumbnail_id( $post_id ) {
-		$thumbnail_id = get_post_meta( $post_id, 'amphtml_featured_image_id', true );
+		$thumbnail_id = get_post_meta( $post_id, 'uamp_featured_image_id', true );
 
 		if ( ! $thumbnail_id ) {
 			$thumbnail_id = get_post_meta( $post_id, '_thumbnail_id', true );

@@ -63,7 +63,7 @@
 				$tag->outertext = $tag->innertext;
 			}
 
-			$illegal_tags = implode( ',', apply_filters( 'amphtml_illegal_tags', array ( 'script, noscript, style, link' ) ) );
+			$illegal_tags = implode( ',', apply_filters( 'uamp_illegal_tags', array ( 'script, noscript, style, link' ) ) );
 
 			foreach ( $this->content->find( $illegal_tags ) as $tag ) {
 				$tag->outertext = "";

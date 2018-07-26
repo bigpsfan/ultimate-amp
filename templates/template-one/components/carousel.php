@@ -1,9 +1,9 @@
 <amp-carousel class="amp-slider" layout="responsive" type="slides" autoplay>
 	<?php
 
-		while( better_amp_have_posts() ) {
+		while( uamp_have_posts() ) {
 
-			better_amp_the_post();
+			uamp_the_post();
 
 			if ( has_post_thumbnail() ):
 				?>

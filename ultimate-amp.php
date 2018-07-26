@@ -667,9 +667,9 @@ class Ultimate_AMP {
 
 
 
-    public function better_amp_get_template_directory() {
+    public function uamp_get_template_directory() {
 
-        if ($theme_info = $this->better_amp_get_template_info()) {
+        if ($theme_info = $this->uamp_get_template_info()) {
             return $theme_info['TemplateRoot'];
         }
 
@@ -677,7 +677,7 @@ class Ultimate_AMP {
     }
 
 
-    function better_amp_get_template_info() {
+    function uamp_get_template_info() {
 
         return wp_parse_args(
             apply_filters('ultimate-amp/template/template-one/active-template', []),
@@ -708,7 +708,7 @@ class Ultimate_AMP {
         return $template->get_template_part('home');
     }
 
-    public function better_amp_index_template() {
+    public function uamp_index_template() {
         $template = new Ultimate_Template_Loader();
 
         return $template->get_template_part('index');
@@ -735,26 +735,26 @@ class Ultimate_AMP {
 
         $templates = new Ultimate_Template_Loader();
 
-        if (function_exists('is_embed') && is_embed() && $template = better_amp_embed_template()) :
+        if (function_exists('is_embed') && is_embed() && $template = uamp_embed_template()) :
         elseif (function_exists('is_woocommerce') && is_woocommerce() && is_page(wc_get_page_id('shop')) && $template = $this->uamp_woocommerce_template()) :
         elseif (is_404() && $template = $this->uamp_404_template()) :
-            //        elseif ( is_search() && $template = better_amp_search_template() ) :
+            //        elseif ( is_search() && $template = uamp_search_template() ) :
         elseif (is_home() && $template = $this->uamp_home_template()) :
-            //        elseif ( is_post_type_archink rel="canonical" href=ve() && $template = better_amp_post_type_archive_template() ) :
-            //        elseif ( is_tax() && $template = better_amp_taxonomy_template() ) :
-            //        elseif ( is_attachment() && $template = better_amp_attachment_template() ) :
+            //        elseif ( is_post_type_archink rel="canonical" href=ve() && $template = uamp_post_type_archive_template() ) :
+            //        elseif ( is_tax() && $template = uamp_taxonomy_template() ) :
+            //        elseif ( is_attachment() && $template = uamp_attachment_template() ) :
             //			remove_filter( 'the_content', 'prepend_attachment' );
         elseif (is_single() && $template = $this->uamp_single_template()) :
         elseif (is_page() && $template = $this->uamp_page_template()) :
         elseif (is_singular() && $template = $this->uamp_single_template()) :
-            //        elseif ( is_category() && $template = better_amp_category_template() ) :
-            //        elseif ( is_tag() && $template = better_amp_tag_template() ) :
-            //        elseif ( is_author() && $template = better_amp_author_template() ) :
-            //        elseif ( is_date() && $template = better_amp_date_template() ) :
-            //        elseif ( is_archive() && $template = better_amp_archive_template() ) :
-            //        elseif ( is_paged() && $template = better_amp_paged_template() ) :
+            //        elseif ( is_category() && $template = uamp_category_template() ) :
+            //        elseif ( is_tag() && $template = uamp_tag_template() ) :
+            //        elseif ( is_author() && $template = uamp_author_template() ) :
+            //        elseif ( is_date() && $template = uamp_date_template() ) :
+            //        elseif ( is_archive() && $template = uamp_archive_template() ) :
+            //        elseif ( is_paged() && $template = uamp_paged_template() ) :
         else :
-            $template = $this->better_amp_index_template();
+            $template = $this->uamp_index_template();
         endif;
 
         return $template;

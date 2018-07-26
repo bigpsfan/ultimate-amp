@@ -30,10 +30,6 @@ class Ultimate_AMP_Abstract_Template {
 	protected $fonts;
 	protected $blocks;
 
-	/**
-	 * @var AMPHTML_Options
-	 */
-	protected $options;
 
 	public function __get( $key ) {
 		if ( isset( $this->properties[ $key ] ) ) {
@@ -48,7 +44,7 @@ class Ultimate_AMP_Abstract_Template {
 	}
 
 	public function get_embedded_elements() {
-		return apply_filters( 'amphtml_embedded_elements', $this->embedded_elements );
+		return apply_filters( 'uamp_embedded_elements', $this->embedded_elements );
 	}
 
 	public function add_embedded_element( $new_element ) {
@@ -116,7 +112,7 @@ class Ultimate_AMP_Abstract_Template {
 	protected function get_dir_path( $sub_dir ) {
 
 		if ( is_dir( UAMP_PLUGIN_DIR_URL . $sub_dir ) ) {
-			return $amphtml_dir . $sub_dir;
+			return $uamp_dir . $sub_dir;
 		}
 
 		return false;
