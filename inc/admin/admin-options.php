@@ -178,7 +178,16 @@
 					'enable' => 'Enable',
 					'disable' => 'Disable'
 				),
-				'default'  => 'disable'
+				'default'  => 'enable'
+			),
+
+			array(
+				'id' => 'uamp_favicon',
+				'type' => 'media',
+				'title' => esc_html__('Favicon Icon', 'uamp'),
+				'default' => array("url" => esc_url( UAMP_PLUGIN_URL . "/images/amp.png" )),
+				'preview' => true,
+				"url" => true
 			),
 
 			array(
@@ -202,16 +211,68 @@
 
 
 
-
+	// Header
 	Redux::setSection( $opt_name, array(
 		'title'            => __( 'Header', 'uamp' ),
 		'id'               => 'global-header',
 		'subsection'       => true,
 		'fields'           => array(
 
+
+			array(
+				'id'       => 'uamp_logo_type',
+				'type'     => 'button_set',
+				'title'    => esc_html__( 'Logo Type', 'uamp' ),
+				'subtitle' => esc_html__( 'Choose Logo Type Image/Text', 'uamp' ),
+				'options'  => array(
+					'image'     	=> esc_html__( 'Image', 'uamp'),
+					'text'    		=> esc_html__( 'Text', 'uamp'),
+					'text_image'    => esc_html__( 'Image & Text', 'uamp'),
+				),
+				'default'  => 'image'
+			),
+
+			array(
+				'id' => 'uamp_logo_text',
+				'type' => 'text',
+				'title' => esc_html__('Logo Text', 'uamp'),
+				'default' => esc_html__('Website Name', 'uamp'),
+				'required' => array( 'uamp_logo_type', '=', array( 'text','text_image'))
+			),
+
+			array(
+				'id' => 'uamp_logo_image',
+				'type' => 'media',
+				'title' => esc_html__('Logo Image', 'uamp'),
+				'default' => array("url" => esc_url( UAMP_PLUGIN_URL . "/images/amp.png" )),
+				'required' => array( 'uamp_logo_type', '=', array( 'image','text_image')),
+				'preview' => true,
+				"url" => true
+			),
+
+
 		)
 	) );
 
+
+	// Footer
+
+
+	Redux::setSection( $opt_name, array(
+		'title'            => __( 'Footer', 'uamp' ),
+		'id'               => 'global-footer',
+		'subsection'       => true,
+		'fields'           => array(
+
+			array(
+				'id'       => 'uamp_copyright_text',
+				'type'     => 'textarea',
+				'title'    => __( 'Copyright Text', 'uamp' ),
+				'default'  => __('', 'uamp' )
+			),
+
+		)
+	) );
 
 
 
