@@ -139,6 +139,9 @@ define( 'AMP_QUERY', 'amp');
 			add_action('init', array( $this, 'uamp_register_menus'));
 			add_action('uamp_init',[ $this, 'uamp_auto_add_amp_menu_link_insert'],9999);
 
+			//Footer Menu Class
+			add_filter( 'nav_menu_link_attributes', [$this, 'uamp_add_menu_link_class'], 10, 3 );
+			add_filter('nav_menu_css_class', [$this, 'uamp_menu_link_list_classes'], 1, 3);
 
 
 			if ( ! class_exists( 'ReduxFramework' ) ) {
@@ -532,6 +535,23 @@ define( 'AMP_QUERY', 'amp');
 
 		}
 
+
+
+		public function uamp_add_menu_link_class( $atts, $item, $args ) {
+			if($args->theme_location == 'uamp-footer-menu') {
+				$class = 'text-decoration-none ampstart-label';
+				$atts['class'] = $class;
+			}
+			return $atts;
+		}
+
+
+		public function uamp_menu_link_list_classes($classes, $item, $args) {
+			if($args->theme_location == 'uamp-footer-menu') {
+				$classes[] = 'px1';
+			}
+			return $classes;
+		}
 
 
 		public function search_filter( $query ) {

@@ -71,26 +71,3 @@
 			echo '&copy; ' . esc_attr( date('Y') ) . esc_html__( ' | Developed by ','uamp') . '<i class="fa fa-heart"></i> ' . esc_html__('by','uamp') . ' <a href="' . esc_url( 'https://jeweltheme.com' ) . '" rel="nofollow">' . esc_html__('Jewel Theme','uamp') . '</a>';
 		}
     }
-
-
-
-
-
-	add_filter( 'nav_menu_link_attributes', 'wpse156165_menu_add_class', 10, 3 );
-
-	function wpse156165_menu_add_class( $atts, $item, $args ) {
-		if($args->theme_location == 'uamp-footer-menu') {
-			$class = 'text-decoration-none ampstart-label';
-			$atts['class'] = $class;
-		}
-		return $atts;
-	}
-
-
-	function atg_menu_classes($classes, $item, $args) {
-		if($args->theme_location == 'uamp-footer-menu') {
-			$classes[] = 'px1';
-		}
-		return $classes;
-	}
-	add_filter('nav_menu_css_class', 'atg_menu_classes', 1, 3);
