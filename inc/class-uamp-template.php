@@ -3,7 +3,12 @@
 if ( ! defined( 'ABSPATH' ) ) { die(); }
 
 require_once 'class-uamp-template-manager.php';
+require_once 'class-uamp-template-loader.php';
 require_once 'class-uamp-sanitize.php';
+require_once UAMP_DIR . '/inc/amp/includes/templates/class-amp-post-template.php';
+require_once UAMP_DIR . '/templates/template-one/functions.php';
+include_once UAMP_DIR . '/lib/simple_html_dom.php';
+
 
 
 class Ultimate_AMP_Template extends Ultimate_AMP_Abstract_Template {
@@ -132,47 +137,50 @@ class Ultimate_AMP_Template extends Ultimate_AMP_Abstract_Template {
 
 //		print_r(apply_filters( 'uamp_template_load', false, $this ));
 
-		if ( $is_loaded ) {
-			return $template;
-		}
-
-//		require_once( UAMP_DIR . '/inc/amp/includes/templates/class-amp-post-template.php');
-		require_once 'class-uamp-template-loader.php';
-		require_once UAMP_DIR . '/templates/template-one/functions.php';
-//		include_once UAMP_DIR . '/lib/simple_html_dom.php';
-
 		$template = new Ultimate_Template_Loader();
 		require_once UAMP_DIR . '/inc/amp/amp.php';
 
 
+		if ( $is_loaded ) {
+			return $template;
+		}
+
+
 
 		switch ( true ) {
+
 			case is_front_page() && is_home():
 				$template->get_template_part('front-page');
-
 				break;
+
 			case is_front_page():
 				$template->get_template_part('front-page');
-
 				break;
+
 			case is_home():
 				$template->get_template_part('home');
 				break;
+
 			case is_single():
 				$template->get_template_part('single');
 				break;
+
 			case is_page():
 				$template->get_template_part('page');
 				break;
+
 			case is_category():
 				$template->get_template_part('archive');
 				break;
+
 			case is_archive():
 				$template->get_template_part('archive');
 				break;
+
 			case is_404():
 				$template->get_template_part('404');
 				break;
+
 //			case is_search():
 //				$this->set_template_content( 'archive' );
 //				$this->set_blocks( 'search' );
